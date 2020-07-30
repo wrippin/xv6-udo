@@ -107,8 +107,9 @@ bootblock: bootasm.S bootmain.c
 	$(OBJDUMP) -S bootblock.o > bootblock.asm
 	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
 	# The following line is here since it has been noticed that if you use Explorer to
-	# copy folders on wsl, sometimees the execute permissions can be removed from perl scripts
-	chmod +x sign.pl
+	# copy folders on wsl, sometimees the execute permissions can be removed from perl scripts.
+	# Uncomment if needed, but it will flag as a change for git.
+	# chmod +x sign.pl
 	./sign.pl bootblock
 
 entryother: entryother.S
@@ -144,7 +145,7 @@ tags: $(OBJS) entryother.S _init
 	etags *.S *.c
 
 vectors.S: vectors.pl
-	chmod +x vectors.pl
+	# chmod +x vectors.pl
 	./vectors.pl > vectors.S
 
 ULIB = ulib.o usys.o printf.o umalloc.o
