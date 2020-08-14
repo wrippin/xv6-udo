@@ -213,7 +213,7 @@ endif
 QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 512 $(QEMUEXTRA)
 
 qemu: fs.img xv6.img
-	cmd.exe /c start /B "C:\Program Files\VcXsrv\xlaunch.exe -run config.xlaunch"
+	"/mnt/c/Program Files/VcXsrv/xlaunch.exe" -run config.xlaunch
 	$(QEMU) -serial mon:stdio $(QEMUOPTS)
 
 qemu-memfs: xv6memfs.img
@@ -229,7 +229,7 @@ qemu-curses: fs.img xv6.img
 	sed "s/localhost:1234/localhost:$(GDBPORT)/" < $^ > $@
 
 qemu-gdb: fs.img xv6.img .gdbinit
-	cmd.exe /c "start /B x410.exe /wm"
+	"/mnt/c/Program Files/VcXsrv/xlaunch.exe" -run config.xlaunch
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -serial mon:stdio $(QEMUOPTS) -S $(QEMUGDB)
 
