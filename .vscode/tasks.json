@@ -4,7 +4,7 @@
    "version": "2.0.0",
    "tasks": [
     {
-        "label": "Build uodos operating system",
+        "label": "Build Xv6 operating system",
         "type": "shell",
         "command": "make",
         "problemMatcher": [],
@@ -14,21 +14,15 @@
         }
     },
     {
-        "label": "Run uodos under QEMU",
+        "label": "Run Xv6 under QEMU",
         "type": "shell",
         "command": "make qemu",
         "problemMatcher": []
     },
     {
-        "label": "Run uodos under QEMU for debugging",
+        "label": "Run Xv6 under QEMU for debugging",
         "type": "shell",
         "command": "make qemu-gdb",
-        "problemMatcher": []
-    },
-    {
-        "label": "Run uodos under QEMU (-nographic)",
-        "type": "shell",
-        "command": "make qemu-nox",
         "problemMatcher": []
     },
     {
