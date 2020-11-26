@@ -197,19 +197,19 @@ void consputc(int c) {
 }
 
 int consoleget(void) {
-	int c;
+    int c;
 
-	acquire(&cons.lock);
+    acquire(&cons.lock);
 
-	while ((c = kbdgetc()) <= 0) {
-		if (c == 0) {
-			c = kbdgetc();
-		}
-	}
+    while ((c = kbdgetc()) <= 0) {
+        if (c == 0) {
+            c = kbdgetc();
+        }
+    }
 
-	release(&cons.lock);
+    release(&cons.lock);
 
-	return c;
+    return c;
 }
 
 #define INPUT_BUF 128
