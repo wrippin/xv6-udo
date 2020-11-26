@@ -20,6 +20,7 @@ void            bwrite(struct buf*);
 void            consoleinit(void);
 void            cprintf(char*, ...);
 void            consoleintr(int (*)(void));
+int             consoleget(void);
 int             consolesetvga(int);
 uchar*          consolevgabuffer();
 void            panic(char*) __attribute__((noreturn));
@@ -73,6 +74,7 @@ void            kinit2(void*, void*);
 
 // kbd.c
 void            kbdintr(void);
+int             kbdgetc(void);
 
 // lapic.c
 void            cmostime(struct rtcdate *r);

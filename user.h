@@ -23,6 +23,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int getch(void);
 // TODO: Declare your user APIs for your system calls.
 
 // ulib.c
