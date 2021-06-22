@@ -190,6 +190,22 @@ void consputc(int c) {
     cgaputc(c);
 }
 
+int consoleget(void) {
+    int c;
+
+    acquire(&cons.lock);
+
+    while ((c = kbdgetc()) <= 0) {
+        if (c == 0) {
+            c = kbdgetc();
+        }
+    }
+
+    release(&cons.lock);
+
+    return c;
+}
+
 #define INPUT_BUF 128
 struct {
     char buf[INPUT_BUF];
