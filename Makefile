@@ -112,6 +112,15 @@ bootblock: bootasm.S bootmain.c
 	# chmod +x sign.pl
 	./sign.pl bootblock
 
+syscall.h: gensyscalls.pl
+	./gensyscalls.pl -h > syscall.h	
+
+syscalltable.h: gensyscalls.pl
+	./gensyscalls.pl -c > syscalltable.h
+
+usys.S: gensyscalls.pl
+	./gensyscalls.pl -a > usys.S
+
 entryother: entryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c entryother.S
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7000 -o bootblockother.o entryother.o
@@ -124,7 +133,7 @@ initcode: initcode.S
 	$(OBJCOPY) -S -O binary initcode.out initcode
 	$(OBJDUMP) -S initcode.o > initcode.asm
 
-kernel: $(OBJS) entry.o entryother initcode kernel.ld
+kernel: syscall.h syscalltable.h $(OBJS) entry.o entryother initcode kernel.ld 
 	$(LD) $(LDFLAGS) -T kernel.ld -o kernel entry.o $(OBJS) -b binary initcode entryother
 	$(OBJDUMP) -S kernel > kernel.asm
 	$(OBJDUMP) -t kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
