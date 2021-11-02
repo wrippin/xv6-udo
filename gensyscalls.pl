@@ -14,7 +14,6 @@
 # push the parameters on to the stack. 
 
 my @syscalls = (
-#define SYS_open   15
 				"fork", 
 				"exit", 
 				"wait", 
