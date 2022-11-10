@@ -320,7 +320,9 @@ int consolewrite(struct inode *ip, char *buf, int n) {
 void consoleinit(void) {
     initlock(&cons.lock, "console");
 
+    // Initialise pointer to point to our console input buffer
     input = &inputBuffer;
+
     devsw[CONSOLE].write = consolewrite;
     devsw[CONSOLE].read = consoleread;
     cons.locking = 1;
