@@ -15,6 +15,23 @@
 #include "proc.h"
 #include "x86.h"
 
+#define INPUT_BUF 128
+
+struct kbdbuffer {
+    char buf[INPUT_BUF];
+    uint r;  // Read index
+    uint w;  // Write index
+    uint e;  // Edit index
+};
+
+struct kbdbuffer inputBuffer;
+
+struct kbdbuffer * input = 0;
+
+#define C(x)  ((x) - '@')  // Control-x
+
+
+
 static void consputc(int);
 
 static int panicked = 0;
@@ -206,16 +223,6 @@ int consoleget(void) {
     return c;
 }
 
-#define INPUT_BUF 128
-struct {
-    char buf[INPUT_BUF];
-    uint r;  // Read index
-    uint w;  // Write index
-    uint e;  // Edit index
-} input;
-
-#define C(x)  ((x) - '@')  // Control-x
-
 void consoleintr(int (*getc)(void)) {
     int c, doprocdump = 0;
 
@@ -227,27 +234,27 @@ void consoleintr(int (*getc)(void)) {
                 doprocdump = 1;
                 break;
             case C('U'):  // Kill line.
-                while (input.e != input.w &&
-                       input.buf[(input.e - 1) % INPUT_BUF] != '\n') {
-                    input.e--;
+                while (input->e != input->w &&
+                       input->buf[(input->e - 1) % INPUT_BUF] != '\n') {
+                    input->e--;
                     consputc(BACKSPACE);
                 }
                 break;
             case C('H'):
             case '\x7f':  // Backspace
-                if (input.e != input.w) {
-                    input.e--;
+                if (input->e != input->w) {
+                    input->e--;
                     consputc(BACKSPACE);
                 }
                 break;
             default:
-                if (c != 0 && input.e - input.r < INPUT_BUF) {
+                if (c != 0 && input->e - input->r < INPUT_BUF) {
                     c = (c == '\r') ? '\n' : c;
-                    input.buf[input.e++ % INPUT_BUF] = c;
+                    input->buf[input->e++ % INPUT_BUF] = c;
                     consputc(c);
-                    if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF) {
-                        input.w = input.e;
-                        wakeup(&input.r);
+                    if (c == '\n' || c == C('D') || input->e == input->r + INPUT_BUF) {
+                        input->w = input->e;
+                        wakeup(&(input->r));
                     }
                 }
                 break;
@@ -267,20 +274,20 @@ int consoleread(struct inode *ip, char *dst, int n) {
     target = n;
     acquire(&cons.lock);
     while (n > 0) {
-        while (input.r == input.w) {
+        while (input->r == input->w) {
             if (myproc()->killed) {
                 release(&cons.lock);
                 ilock(ip);
                 return -1;
             }
-            sleep(&input.r, &cons.lock);
+            sleep(&(input->r), &cons.lock);
         }
-        c = input.buf[input.r++ % INPUT_BUF];
+        c = input->buf[input->r++ % INPUT_BUF];
         if (c == C('D')) { // EOF
             if (n < target) {
                 // Save ^D for next time, to make sure
                 // caller gets a 0-byte result.
-                input.r--;
+                input->r--;
             }
             break;
         }
@@ -313,6 +320,7 @@ int consolewrite(struct inode *ip, char *buf, int n) {
 void consoleinit(void) {
     initlock(&cons.lock, "console");
 
+    input = &inputBuffer;
     devsw[CONSOLE].write = consolewrite;
     devsw[CONSOLE].read = consoleread;
     cons.locking = 1;
