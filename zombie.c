@@ -5,7 +5,7 @@
 #include "stat.h"
 #include "user.h"
 
-int main(void)  {
+int main(int argc, char* argv[])  {
     if (fork() > 0) {
         sleep(5);  // Let child exit before parent.
     }
