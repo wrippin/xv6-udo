@@ -5,9 +5,9 @@
 #include "user.h"
 #include "fcntl.h"
 
-char *argv[] = { "sh", 0 };
+char *shell_argv[] = { "sh", 0 };
 
-int main(void) {
+int main(int argc, char* argv[]) {
     int pid, wpid;
 
     if (open("console", O_RDWR) < 0) {
@@ -25,7 +25,7 @@ int main(void) {
             exit();
         }
         if (pid == 0) {
-            exec("sh", argv);
+            exec("sh", shell_argv);
             printf(1, "init: exec sh failed\n");
             exit();
         }

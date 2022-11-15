@@ -96,3 +96,11 @@ void* memmove(void *vdst, const void *vsrc, int n) {
     }
     return vdst;
 }
+
+
+__attribute__((noreturn))
+int _init(int argc, char* argv[]) {
+	main(argc, argv);
+	exit();
+}
+

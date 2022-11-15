@@ -143,7 +143,7 @@ int getcmd(char *buf, int nbuf) {
     return 0;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
     static char buf[100];
     int fd;
 
